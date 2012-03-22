@@ -6,7 +6,7 @@
 		<script src="vendors/jquery-1.7.1.js"></script>
 		<script src="vendors/underscore.js"></script>
 		<script src="vendors/backbone.js"></script>
-		<script src="vendors/backbone-localstorage.js"></script>
+		<script src="vendors/backbone.localStorage.js"></script>
 		<script src="localTimer.js"></script>
 		<script src="vendors/bootstrap/js/bootstrap.js"></script>
 		<link href="vendors/bootstrap/css/bootstrap.css" media="all" rel="stylesheet" type="text/css"/>
@@ -38,19 +38,45 @@
 		  </div>
 		</div>
 		<div class="container">
-		<header class="">
+		<!--<header style="display: none;">
 			<div class="page-header">
 				<h1>Time Records <small>record your time spent for anything</small></h1>
 			</div>
-		</header>
+		</header>-->
 		
-		<section>
-			
+		<section class="row">
+			<div class="span4 offset4 app" id="recordapp">
+				<h2>Records</h2>
+				
+				<div id="record-create">
+					<input id="record-new" placeholder="What are you working at?" type="text" />
+					<a href="#" class="help" rel="popover" title="New record" data-content="Enter description and press enter to start a new record"><i class="icon-question-sign"></i></a>
+				</div>
+				
+				<table id="record-table" class="table">
+				
+				</table>
+			</div>
 		</section>
 		
 		<footer>
-			Some nice blablub
+			
 		</footer>
 		</div>
+		
+	<!-- Templates -->
+	<script type="text/template" id="record-item-template">
+		<td>
+			<%= stoppedAt == null ? '<a href="#" class="record-stop" title="Stop record"><i class="icon-ok-sign"></i></a>' : '<a href="#" class="record-restart" title="Restart record"><i class="icon-plus-sign"></i></a>' %>
+		</td>
+		<td class="record <%= stoppedAt == null ? 'active' : 'stopped' %>">
+			<span class="record-text"></span>
+			<span class="record-edit"></span>
+			<span class="record-destroy"></span>
+		</td>
+		<div class="edit" style="display: none;">
+			<input class="record-input" type="text" value="" />
+		</div>
+	</script>
 	</body>
 </html>
