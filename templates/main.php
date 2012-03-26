@@ -76,7 +76,9 @@
 		<td class="record <%= stoppedAt == null ? 'active' : 'stopped' %>">
 			<span class="record-text"></span>
 			<span class="record-edit"></span>
-			<span class="record-destroy"></span>
+		</td>
+		<td class="">
+			<a href="#" class="record-destroy" title="Clear record"><i class="icon-remove"></i></a>
 		</td>
 		<div class="edit" style="display: none;">
 			<input class="record-input" type="text" value="" />
@@ -85,8 +87,14 @@
 
 	<script type="text/template" id="record-stats-template">
 		<h3>Stats</h3>
-		<% if (total) { %>
-			<div class="record-destroy">Total <%= total %></div>
+		<% if (totalCount) { %>
+			<div>Total Records: <%= totalCount %></div>
+		<% } %>
+		<% if (totalTime) { %>
+			<div>Total Time: <%= totalTime %></div>
+		<% } %>
+		<% if (totalCount) { %>
+			<div class="records-destroy"><a href="#"><i class="icon-remove"></i>Delete all records</a></div>
 		<% } %>
 	</script>
 

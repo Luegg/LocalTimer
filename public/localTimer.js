@@ -1,8 +1,6 @@
 $(function(){
 	$('.help').popover();
 
-	var LocalTimer;
-
 	window.TimeRecord = Backbone.Model.extend({
 		defaults: function(){
 			return {
@@ -15,13 +13,20 @@ $(function(){
 		
 		stop: function() {
 			this.save({stoppedAt: new Date()});
+		},
+		
+		getDuration: function() {
+			if(this.has('stoppedAt')){
+				//return (this.get('stoppedAt').getMilliseconds() - this.get('startedAt').getMilliseconds()) / 1000;
+			}
+			return 0;
 		}
 	});
 	
 	window.TimeRecordList = Backbone.Collection.extend({
 		model:			TimeRecord,
 		localStorage:	new Store('records'),
-		counter:			1,
+		counter:		1,
 		
 		done: function() {
 			return this.filter(function(record){
@@ -34,12 +39,18 @@ $(function(){
 		},
 		
 		comparator: function(record) {
-			return record.get('order');
+			return record.get('order') * -1;
 		},
 		
 		nextOrder: function(){
 			return this.counter++;
-		}
+		},
+		
+		getTotalTime: function(){
+			return this.reduce(function(memo, record){
+				return memo + record.getDuration();
+			}, 0);
+		},
 	});
 	
 	window.Records = new TimeRecordList;
@@ -49,17 +60,23 @@ $(function(){
 		template:		_.template($('#record-item-template').html()),
 		events:	{
 			'click .record-stop':	'stopRecord',
-			'click .record-restart':'restartRecord'
+			'click .record-restart':'restartRecord',
+			'click .record-destroy':'destroyRecord'
 		},
 		
 		initialize: function(){
 			this.model.bind('change', this.render, this);
+			this.model.bind('destroy', this.remove, this);
 		},
 
 		render: function() {
 			$(this.el).html(this.template(this.model.toJSON()));
 			this.setContent();
 			return this;
+		},
+		
+		remove: function() {
+			$(this.el).remove();
 		},
 		
 		setContent: function() {
@@ -74,6 +91,10 @@ $(function(){
 		restartRecord: function(e) {
 			var text = this.model.get('text');
 			Records.create({text: text});
+		},
+		
+		destroyRecord: function(e) {
+			this.model.destroy();
 		}
 	});
 	
@@ -84,7 +105,8 @@ $(function(){
 		
 		events: {
 			'keypress #record-new':	'createOnEnter',
-			'keyup #record-new':	'showPopover'
+			'keyup #record-new':	'showPopover',
+			'click #records-destroy a':'destroyAll'
 		},
 		
 		initialize: function(){
@@ -99,13 +121,15 @@ $(function(){
 		
 		render: function(){
 			this.$('#recordstats').html(this.statsTemplate({
-				total: Records.length
+				totalCount: Records.length,
+				totalTime: Records.getTotalTime()
 			}));
+			this.delegateEvents();
 		},
 		
 		addOne: function(record){
 			var view = new TimeRecordView({model: record});
-			this.$('#record-table').append(view.render().el);
+			this.$('#record-table').prepend(view.render().el);
 		},
 		
 		addAll: function(){
@@ -130,6 +154,14 @@ $(function(){
 			this.tooltipTimeout = _.delay(function(){
 					po.popover('show');
 				}, 1000);
+		},
+		
+		destroyAll: function(e){
+			Records.each(function(record){
+				record.destroy();
+			});
+			
+			return false;
 		}
 	});
 	
