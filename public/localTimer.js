@@ -8,7 +8,8 @@ $(function(){
 			return {
 				startedAt:	new Date(),
 				stoppedAt:	null,
-				text:		''
+				text:		'',
+				order:		Records.nextOrder()
 			}
 		},
 		
@@ -20,6 +21,7 @@ $(function(){
 	window.TimeRecordList = Backbone.Collection.extend({
 		model:			TimeRecord,
 		localStorage:	new Store('records'),
+		counter:			1,
 		
 		done: function() {
 			return this.filter(function(record){
@@ -32,7 +34,11 @@ $(function(){
 		},
 		
 		comparator: function(record) {
-			return record.get('startedAd');
+			return record.get('order');
+		},
+		
+		nextOrder: function(){
+			return this.counter++;
 		}
 	});
 	
@@ -42,7 +48,8 @@ $(function(){
 		tagName:		'tr',
 		template:		_.template($('#record-item-template').html()),
 		events:	{
-			'click .record-stop':	'stopRecord'
+			'click .record-stop':	'stopRecord',
+			'click .record-restart':'restartRecord'
 		},
 		
 		initialize: function(){
@@ -62,12 +69,18 @@ $(function(){
 		
 		stopRecord: function(e) {
 			this.model.stop();
-			
+		},
+		
+		restartRecord: function(e) {
+			var text = this.model.get('text');
+			Records.create({text: text});
 		}
 	});
 	
 	window.TimeRecordAppView = Backbone.View.extend({
 		el:				$('#recordapp'),
+		
+		statsTemplate:	_.template($('#record-stats-template').html()),
 		
 		events: {
 			'keypress #record-new':	'createOnEnter',
@@ -79,8 +92,15 @@ $(function(){
 			
 			Records.bind('add', this.addOne, this);
 			Records.bind('reset', this.addAll, this);
+			Records.bind('all', this.render, this);
 			
 			Records.fetch();
+		},
+		
+		render: function(){
+			this.$('#recordstats').html(this.statsTemplate({
+				total: Records.length
+			}));
 		},
 		
 		addOne: function(record){

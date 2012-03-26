@@ -44,8 +44,8 @@
 			</div>
 		</header>-->
 		
-		<section class="row">
-			<div class="span4 offset4 app" id="recordapp">
+		<section class="row" id="recordapp">
+			<div class="span4 offset3 app">
 				<h2>Records</h2>
 				
 				<div id="record-create">
@@ -56,6 +56,10 @@
 				<table id="record-table" class="table">
 				
 				</table>
+			</div>
+			<div class="span2">
+				<div class="app" id="recordstats">
+				</div>
 			</div>
 		</section>
 		
@@ -78,5 +82,13 @@
 			<input class="record-input" type="text" value="" />
 		</div>
 	</script>
+
+	<script type="text/template" id="record-stats-template">
+		<h3>Stats</h3>
+		<% if (total) { %>
+			<div class="record-destroy">Total <%= total %></div>
+		<% } %>
+	</script>
+
 	</body>
 </html>
