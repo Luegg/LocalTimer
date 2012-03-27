@@ -20,13 +20,20 @@ $(function(){
 				//return (this.get('stoppedAt').getMilliseconds() - this.get('startedAt').getMilliseconds()) / 1000;
 			}
 			return 0;
+		},
+		
+		isActive: function(){
+			return !this.has('stoppedAt');
 		}
 	});
 	
 	window.TimeRecordList = Backbone.Collection.extend({
 		model:			TimeRecord,
 		localStorage:	new Store('records'),
-		counter:		1,
+		
+		initialize: function(){
+			this.bind('add', this.stopAllButFirst, this);
+		},
 		
 		done: function() {
 			return this.filter(function(record){
@@ -35,11 +42,11 @@ $(function(){
 		},
 		
 		open: function() {
-			return this.without.apply(this, this.done());
+			return this.without(this, this.done());
 		},
 		
 		comparator: function(record) {
-			return record.get('order') * -1;
+			return (Records.last().get('order') - 1);
 		},
 		
 		nextOrder: function(){
@@ -51,6 +58,12 @@ $(function(){
 				return memo + record.getDuration();
 			}, 0);
 		},
+		
+		stopAllButFirst: function(){
+			_.each(_.without(this.open(),this.last()), function(record){
+				record.stop();
+			});
+		}
 	});
 	
 	window.Records = new TimeRecordList;
@@ -72,6 +85,9 @@ $(function(){
 		render: function() {
 			$(this.el).html(this.template(this.model.toJSON()));
 			this.setContent();
+			if(this.model.isActive()){
+				$(this.el).addClass('active');
+			}
 			return this;
 		},
 		

@@ -80,9 +80,6 @@
 		<td class="">
 			<a href="#" class="record-destroy" title="Clear record"><i class="icon-remove"></i></a>
 		</td>
-		<div class="edit" style="display: none;">
-			<input class="record-input" type="text" value="" />
-		</div>
 	</script>
 
 	<script type="text/template" id="record-stats-template">
@@ -94,7 +91,7 @@
 			<div>Total Time: <%= totalTime %></div>
 		<% } %>
 		<% if (totalCount) { %>
-			<div class="records-destroy"><a href="#"><i class="icon-remove"></i>Delete all records</a></div>
+			<div class="records-destroy"><a href="#"><i class="icon-remove"></i> Delete all records</a></div>
 		<% } %>
 	</script>
 

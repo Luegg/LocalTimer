@@ -29,8 +29,8 @@ header {
 	padding: 10px;
 }
 
-.record.active{
-
+.active{
+	background-color: #AAFFAA;
 }
 
 .record.stopped{
