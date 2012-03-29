@@ -7,8 +7,8 @@
 		<script src="vendors/underscore.js"></script>
 		<script src="vendors/backbone.js"></script>
 		<script src="vendors/backbone.localStorage.js"></script>
-		<script src="localTimer.js"></script>
 		<script src="vendors/bootstrap/js/bootstrap.js"></script>
+		<script type='text/javascript' src='steal/steal.js?localTimer.js'></script>
 		<link href="vendors/bootstrap/css/bootstrap.css" media="all" rel="stylesheet" type="text/css"/>
 		<link href="localTimer.css" media="all" rel="stylesheet" type="text/css"/>
 		<link href="vendors/bootstrap/css/bootstrap-responsive.css" media="all" rel="stylesheet" type="text/css"/>
